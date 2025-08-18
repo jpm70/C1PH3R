@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C1PH3R - Decodificador de Cifrados Clásicos</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <div class="logo-container">
+        <img src="logo.png" alt="C1PH3R Logo">
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>C1PH3R 🔐</h1>
+            <p>Decodifica mensajes cifrados con algoritmos clásicos.</p>
+        </div>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <label for="encryptedInput">Texto Cifrado:</label>
+                <textarea id="encryptedInput" rows="5" placeholder="Introduce el texto cifrado aquí..."></textarea>
+            </div>
+            <div class="input-group">
+                <label for="cipherSelect">Tipo de Cifrado:</label>
+                <select id="cipherSelect">
+                    <option value="auto">Detección Automática</option>
+                    <option value="base64">Base64</option>
+                    <option value="rot13">ROT13</option>
+                    <option value="cesar">Cifrado César</option>
+                    <option value="vigenere">Cifrado Vigenère</option>
+                    <option value="atbash">Atbash</option>
+                    <option value="polybius">Cuadrado de Polibio</option>
+                    <option value="scytale">Scytale</option>
+                    <option value="playfair">Playfair</option>
+                </select>
+            </div>
+            <div id="vigenereKeyGroup" class="input-group hidden">
+                <label for="vigenereKey">Clave (para Vigenère):</label>
+                <input type="text" id="vigenereKey" placeholder="Introduce la clave...">
+            </div>
+            <div id="cesarKeyGroup" class="input-group hidden">
+                <label for="cesarKey">Desplazamiento (para César):</label>
+                <input type="number" id="cesarKey" value="1" min="1" max="25">
+            </div>
+            <div id="scytaleKeyGroup" class="input-group hidden">
+                <label for="scytaleKey">Clave (Ancho del bastón):</label>
+                <input type="number" id="scytaleKey" value="2" min="2">
+            </div>
+            <div id="playfairKeyGroup" class="input-group hidden">
+                <label for="playfairKey">Clave (para Playfair):</label>
+                <input type="text" id="playfairKey" placeholder="Introduce la clave...">
+            </div>
+            <button id="decodeBtn">Decodificar</button>
+        </div>
+
+        <div class="results-section">
+            <h2>Mensaje Decodificado</h2>
+            <div id="loading" class="hidden">Decodificando...</div>
+            <div id="error-message" class="hidden error-message"></div>
+            <textarea id="decodedOutput" rows="5" readonly></textarea>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
