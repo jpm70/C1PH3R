@@ -100,23 +100,24 @@ document.addEventListener('DOMContentLoaded', () => {
     function decodePolybius(str) {
         const polybiusTable = {
             '11': 'a', '12': 'b', '13': 'c', '14': 'd', '15': 'e',
-            '21': 'f', '22': 'g', '23': 'h', '24': 'i', '25': 'j', // No tiene k
+            '21': 'f', '22': 'g', '23': 'h', '24': 'i', '25': 'k',
             '31': 'l', '32': 'm', '33': 'n', '34': 'o', '35': 'p',
             '41': 'q', '42': 'r', '43': 's', '44': 't', '45': 'u',
             '51': 'v', '52': 'w', '53': 'x', '54': 'y', '55': 'z'
         };
         let result = '';
         let cleanStr = str.replace(/[^0-9]/g, '');
-        if (cleanStr.length % 2 !== 0) return 'Error: Longitud impar.';
+        if (cleanStr.length % 2 !== 0) throw new Error('Longitud de texto cifrado inválida para Polibio. Debe ser un número par de dígitos.');
         for (let i = 0; i < cleanStr.length; i += 2) {
             let pair = cleanStr.substring(i, i + 2);
-            result += polybiusTable[pair] || '';
+            if (!polybiusTable[pair]) throw new Error(`Combinación inválida para Polibio: ${pair}`);
+            result += polybiusTable[pair];
         }
         return result;
     }
 
     function decodeScytale(str, key) {
-        if (!key || key <= 1) return 'Error: La clave debe ser mayor que 1.';
+        if (!key || key <= 1) throw new Error('La clave para Scytale debe ser un número entero mayor que 1.');
         const cleanStr = str.replace(/[^a-zA-Z]/g, '');
         const cols = key;
         const rows = Math.ceil(cleanStr.length / cols);
@@ -160,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let result = '';
 
         if (cleanStr.length % 2 !== 0) {
-            return "Error: El texto cifrado debe tener una longitud par.";
+            throw new Error("El texto cifrado para Playfair debe tener una longitud par.");
         }
 
         for (let i = 0; i < cleanStr.length; i += 2) {
@@ -200,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        setTimeout(() => {
+        try {
             let result = '';
             switch (selectedCipher) {
                 case 'auto':
@@ -250,10 +251,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     break;
                 case 'polybius':
                     result = decodePolybius(encryptedText);
-                    if (result.startsWith('Error')) {
-                        errorMessage.textContent = result;
-                        errorMessage.classList.remove('hidden');
-                    }
                     break;
                 case 'scytale':
                     const scytaleKey = parseInt(scytaleKeyInput.value);
@@ -264,10 +261,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         return;
                     }
                     result = decodeScytale(encryptedText, scytaleKey);
-                    if (result.startsWith('Error')) {
-                        errorMessage.textContent = result;
-                        errorMessage.classList.remove('hidden');
-                    }
                     break;
                 case 'playfair':
                     const playfairKey = playfairKeyInput.value.trim();
@@ -278,15 +271,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         return;
                     }
                     result = decodePlayfair(encryptedText, playfairKey);
-                    if (result.startsWith('Error')) {
-                        errorMessage.textContent = result;
-                        errorMessage.classList.remove('hidden');
-                    }
                     break;
             }
             
             decodedOutput.value = result;
+        } catch (e) {
+            errorMessage.textContent = e.message;
+            errorMessage.classList.remove('hidden');
+        } finally {
             loadingMessage.classList.add('hidden');
-        }, 500);
+        }
     });
 });
