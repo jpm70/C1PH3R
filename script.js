@@ -65,8 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let result = '';
         let keyIndex = 0;
         key = key.toLowerCase();
+        let cleanStr = str.replace(/[^a-zA-Z]/g, ''); // Ignora caracteres no alfabéticos
         for (let i = 0; i < str.length; i++) {
-            let charCode = str.charCodeAt(i);
+            let originalChar = str.charAt(i);
+            let charCode = originalChar.charCodeAt(0);
             if (charCode >= 65 && charCode <= 90) { // Mayúsculas
                 let keyShift = key.charCodeAt(keyIndex % key.length) - 97;
                 result += String.fromCharCode(((charCode - 65 - keyShift + 26) % 26) + 65);
@@ -76,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 result += String.fromCharCode(((charCode - 97 - keyShift + 26) % 26) + 97);
                 keyIndex++;
             } else {
-                result += str.charAt(i);
+                result += originalChar; // Mantiene los caracteres que no son letras
             }
         }
         return result;
@@ -106,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '51': 'v', '52': 'w', '53': 'x', '54': 'y', '55': 'z'
         };
         let result = '';
-        let cleanStr = str.replace(/[^0-9]/g, '');
+        let cleanStr = str.replace(/[^0-9]/g, ''); // Ignora caracteres no numéricos
         if (cleanStr.length % 2 !== 0) throw new Error('Longitud de texto cifrado inválida para Polibio. Debe ser un número par de dígitos.');
         for (let i = 0; i < cleanStr.length; i += 2) {
             let pair = cleanStr.substring(i, i + 2);
@@ -118,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function decodeScytale(str, key) {
         if (!key || key <= 1) throw new Error('La clave para Scytale debe ser un número entero mayor que 1.');
-        const cleanStr = str.replace(/[^a-zA-Z]/g, '');
+        const cleanStr = str.replace(/[^a-zA-Z]/g, ''); // Ignora caracteres no alfabéticos
         const cols = key;
         const rows = Math.ceil(cleanStr.length / cols);
         const resultMatrix = Array(rows).fill(0).map(() => Array(cols).fill(''));
@@ -214,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     for (let i = 1; i <= 25; i++) {
                         result += `  Desplazamiento ${i}: ${decodeCesar(encryptedText, i)}\n`;
                     }
-                    result += '\n(Para Polibio, Scytale, Playfair y Vigenère, por favor, introduce la clave manualmente)';
+                    result += '\n(Para Vigenère, Polibio, Scytale y Playfair, por favor, introduce la clave manualmente)';
                     break;
                 case 'base64':
                     result = decodeBase64(encryptedText);
